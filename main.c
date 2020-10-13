@@ -1,62 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int odd = 0, x = 0, y = 1, numbers = 0;
+#define LENGTH 512
 
-void fibonacci(int actual){
-    numbers--;
-    if(numbers == 0) return;
-    if(odd){
-        x += y;
-        printf("%d\n", x);
-    }else {
-        y += x;
-        printf("%d\n", y);
-    }
-    odd = 1 - odd;
-    fibonacci(numbers);
-}
-
-int main()
-{
-    printf("How much numbers you want?\n");
-    scanf("%d", &numbers);
-    if(numbers == 0) return 0;
-    printf("\n%d\n", x);
-    fibonacci(numbers);
-    return 0;
-}
-
-/*
-#include <stdio.h>
-#include <stdlib.h>
-
-int odd = 0, x = 0, y = 1;
+int numbers = 0;
+unsigned current[LENGTH] = {1}, previous[LENGTH] = {}, temp[LENGTH] = {};
 
 void fibonacci(){
-    if(odd){
-        x += y;
-        printf("%d\n", x);
-    }else {
-        y += x;
-        printf("%d\n", y);
+    numbers--;
+    if(numbers == 0) return;
+
+    unsigned overflow = 0;
+    for(int count = 0; count < LENGTH; count++){
+        temp[count] = current[count];
+        current[count] += previous[count];
+        previous[count] = temp[count];
+
+        if(overflow > 0){
+            current[count] += overflow;
+        }
+        if(current[count] > 9){
+            current[count] -= 10;
+            overflow = 1;
+        }else{
+            overflow = 0;
+        }
     }
-    odd = 1 - odd;
+
+    for(int count = LENGTH - 1; count >= 0; count--){
+        printf("%u", previous[count]);
+    }
+
+    printf("\n");
+    fibonacci();
 }
 
 int main()
 {
-    int numbers = 0;
     printf("How much numbers you want?\n");
     scanf("%d", &numbers);
-    if(numbers == 0) return 0;
-
-    printf("\n%d\n", x);
-
-    for(int count = 0; count < numbers - 1; count++){
-        fibonacci();
-    }
-
+    fibonacci();
     return 0;
 }
-*/
